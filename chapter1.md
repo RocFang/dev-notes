@@ -16,6 +16,6 @@ how可以为如下值：
 1. close本身并不会释放该socket占用的内存,而只是将该socket的引用计数减一。只有当该socket的引用计数减到0时,才会释放相关内存。
  所以，调用close并不能保证该socket不可用了，而调用shutdown，可以直接关闭该连接。
 
-2.shudown可以单方向的关闭一个socket连接，由参数how控制。
+2. shudown可以单方向的关闭一个socket连接，由参数how控制。
 
 
