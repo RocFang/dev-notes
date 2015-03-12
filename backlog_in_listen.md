@@ -165,6 +165,30 @@ incomplete connections, regardless of whether they are legitimate or from a hack
 even with this interpretation, scenarios do occur where the traditional value of 5 is
 inadequate.
 
+长长的引用的《unix网络编程》中的原文。从中，我们知道，这个backlog参数的定义历史以来并不明确，但一种传统的定义是，backlog是已成功连接队列和未成功连接队列中元素之和。但各系统的实际做法还不一样，而且，Linux中是什么样子的，该书中并未提及，也可能跟上面的说法都不一样。
+
+在上面的引文中，作者在提到sync攻击时，表达了这样一种观点：
+>But what is most interesting in this note is revisiting what the listen backlog
+really means. It should specify the maximum number of completed connections for a given
+socket that the kernel will queue. 
+
+即，backlog应该代表建连成功的连接的个数，而不是2个队列元素个数的总和。
+
+那么，Linux中是怎么做的呢，我们先看看Linux下listen的man手册:
+>The backlog parameter defines the maximum length the queue of pending connections may grow to.  If  a
+       connection  request arrives with the queue full the client may receive an error with an indication of
+       ECONNREFUSED or, if the underlying protocol supports retransmission, the request may  be  ignored  so
+       that retries succeed.
+       
+>The  behaviour  of the backlog parameter on TCP sockets changed with Linux 2.2.  Now it specifies the
+       queue length for completely established sockets waiting to be accepted,  instead  of  the  number  of
+       incomplete  connection  requests.  The  maximum length of the queue for incomplete sockets can be set
+       using the tcp_max_syn_backlog sysctl.  When syncookies are enabled there is no logical maximum length
+       and this sysctl setting is ignored.  See tcp(7) for more information.
+
+即，Linux的Manual里说，在Linux2.2后，backlog就是已成功建立连接，等待被accept的连接个数。与上面《unix网络编程》引文中，作者的个人看法一致。
+
+
 
 
 
