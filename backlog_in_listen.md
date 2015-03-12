@@ -188,6 +188,10 @@ socket that the kernel will queue.
 
 即，Linux的Manual里说，在Linux2.2后，backlog就是已成功建立连接，等待被accept的连接个数。与上面《unix网络编程》引文中，作者的个人看法一致。
 
+另外，可以参考这篇文章：
+[How TCP backlog works in Linux](http://veithen.github.io/2014/01/01/how-tcp-backlog-works-in-linux.html)
+
+
 
 
 
