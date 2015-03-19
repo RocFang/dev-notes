@@ -53,14 +53,13 @@ ssize_t sendmsg(int sockfd, const struct msghdr *msg, int flags);
 其中，根据POSIX.1 msghdr的定义至少应该包含下面几个成员：
 ```
 struct msghdr {
-void *msg_name; /* optional address */
-socklen_t msg_namelen; /* address size in bytes */
-struct iovec *msg_iov; /* array of I/O buffers */
-int msg_iovlen; /* number of elements in array */
-void *msg_control; /* ancillary data */
-socklen_t msg_controllen; /* number of ancillary bytes */
-int msg_flags; /* flags for received message */
-.
+    void *msg_name; /* optional address */
+    socklen_t msg_namelen; /* address size in bytes */
+    struct iovec *msg_iov; /* array of I/O buffers */
+    int msg_iovlen; /* number of elements in array */
+    void *msg_control; /* ancillary data */
+    socklen_t msg_controllen; /* number of ancillary bytes */
+    int msg_flags; /* flags for received message */
 };
 ```
 在Linux的manual page中，msghdr的定义为:
