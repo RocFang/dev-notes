@@ -158,3 +158,93 @@ CMSG_LEN传入的参数是一个控制信息中的数据部分的大小,返回�
 
 但是sendmsg提供了可以传递控制信息的功能,我们要实现的传递描述符这一功能,就必须要用到这个控制信息。在msghdr变量的cmsghdr成员中,由控制头cmsg_level和cmsg_type来设置"传递文件描述符"这一属性,并将要传递的文件描述符作为数据部分,保存在cmsghdr变量的后面。这样就可以实现传递文件描述符这一功能,在此时,是不需要使用msg_iov来传递数据的。
 
+具体的说,为msghdr的成员msg_control分配一个cmsghdr的空间,将该cmsghdr结构的cmsg_level设置为SOL_SOCKET,cmsg_type设置为SCM_RIGHTS,并将要传递的文件描述符作为数据部分,调用sendmsg即可。其中,SCM表示socket-level control message,SCM_RIGHTS表示我们要传递访问权限。
+
+## Nginx中传递文件描述符的代码实现
+关于如何在进程间传递文件描述符,我们已经理的差不多了。下面看看Nginx中是如何做的。
+
+Nginx中的相关代码为:
+```
+ngx_int_t
+ngx_write_channel(ngx_socket_t s, ngx_channel_t *ch, size_t size,
+    ngx_log_t *log)
+{
+    ssize_t             n;
+    ngx_err_t           err;
+    struct iovec        iov[1];
+    struct msghdr       msg;
+
+#if (NGX_HAVE_MSGHDR_MSG_CONTROL)
+
+    union {
+        struct cmsghdr  cm;
+        char            space[CMSG_SPACE(sizeof(int))];
+    } cmsg;
+
+    if (ch->fd == -1) {
+        msg.msg_control = NULL;
+        msg.msg_controllen = 0;
+
+    } else {
+        msg.msg_control = (caddr_t) &cmsg;
+        msg.msg_controllen = sizeof(cmsg);
+
+        ngx_memzero(&cmsg, sizeof(cmsg));
+
+        cmsg.cm.cmsg_len = CMSG_LEN(sizeof(int));
+        cmsg.cm.cmsg_level = SOL_SOCKET;
+        cmsg.cm.cmsg_type = SCM_RIGHTS;
+
+        /*
+         * We have to use ngx_memcpy() instead of simple
+         *   *(int *) CMSG_DATA(&cmsg.cm) = ch->fd;
+         * because some gcc 4.4 with -O2/3/s optimization issues the warning:
+         *   dereferencing type-punned pointer will break strict-aliasing rules
+         *
+         * Fortunately, gcc with -O1 compiles this ngx_memcpy()
+         * in the same simple assignment as in the code above
+         */
+
+        ngx_memcpy(CMSG_DATA(&cmsg.cm), &ch->fd, sizeof(int));
+    }
+
+    msg.msg_flags = 0;
+
+#else
+
+    if (ch->fd == -1) {
+        msg.msg_accrights = NULL;
+        msg.msg_accrightslen = 0;
+
+    } else {
+        msg.msg_accrights = (caddr_t) &ch->fd;
+        msg.msg_accrightslen = sizeof(int);
+    }
+
+#endif
+
+    iov[0].iov_base = (char *) ch;
+    iov[0].iov_len = size;
+
+    msg.msg_name = NULL;
+    msg.msg_namelen = 0;
+    msg.msg_iov = iov;
+    msg.msg_iovlen = 1;
+
+    n = sendmsg(s, &msg, 0);
+
+    if (n == -1) {
+        err = ngx_errno;
+        if (err == NGX_EAGAIN) {
+            return NGX_AGAIN;
+        }
+
+        ngx_log_error(NGX_LOG_ALERT, log, err, "sendmsg() failed");
+        return NGX_ERROR;
+    }
+
+    return NGX_OK;
+}
+
+```
+其中,参数s就是一个用socketpair创建的管道的一端,要传送的文件描述符位于参数ch所指向的结构体中。ch结构体本身,包含要传送的文件描述符和其他成员,则通过io_vec类型的成员msg_iov传送。
