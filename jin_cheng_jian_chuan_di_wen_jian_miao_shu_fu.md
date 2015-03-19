@@ -98,4 +98,25 @@ struct iovec {
     size_t iov_len;   /* Number of bytes */
 };
 ```
+成员msg_flags用来描述接受到的消息的性质,由调用recvmsg时传入的flags参数设置。recvmsg的函数原型为:
+```
+#include <sys/socket.h>
+ssize_t recvmsg(int sockfd, struct msghdr *msg, int flags);
+```
+与sendmsg相对应，recvmsg用msghdr结构指定多个缓冲区来存放读取到的结果。flags参数用来修改recvmsg的默认行为。传入的flags参数在调用完recvmsg后，会被设置到msg所指向的msghdr类型的msg_flags变量中。flags可以为如下值:
+![](flags_in_msghdr.jpg)
+
+回来继续讲sendmsg和msghdr结构。
+
+msghdr结构中剩下的两个成员,msg_control和msg_contorllen,是用来发送或接收控制信息的。其中,msg_control指向一个cmsghdr的结构体,msg_controllen成员是控制信息所占用的字节数。
+
+在Linux 的Manual page(man cmsg)中,cmsghdr的定义为:
+```
+struct cmsghdr {
+    socklen_t   cmsg_len;   /* data byte count, including header */
+    int         cmsg_level; /* originating protocol */
+    int         cmsg_type;  /* protocol-specific type */
+    /* followed by  unsigned char   cmsg_data[]; */
+};
+```
 
