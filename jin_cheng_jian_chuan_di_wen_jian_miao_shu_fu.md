@@ -12,7 +12,7 @@
 
 这看似不可能的操作，是怎么进行的呢？
 
-答案是使用匿名Unix域套接字，即socketpair()和sendmsg/recvmsg来实现。
+**答案是使用匿名Unix域套接字，即socketpair()和sendmsg/recvmsg来实现。**
 
 ## 关于socketpair
 
