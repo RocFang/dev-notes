@@ -72,7 +72,7 @@ struct msghdr {
     void         *msg_control;    /* ancillary data, see below */
     socklen_t     msg_controllen; /* ancillary data buffer len */
     int           msg_flags;      /* flags on received message */
-         };
+};
 ```
 查看Linux内核源代码(3.18.1)，可知msghdr的准确定义为：
 ```
