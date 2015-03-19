@@ -64,14 +64,14 @@ struct msghdr {
 ```
 在Linux的manual page中，msghdr的定义为:
 ```
-         struct msghdr {
-             void         *msg_name;       /* optional address */
-             socklen_t     msg_namelen;    /* size of address */
-             struct iovec *msg_iov;        /* scatter/gather array */
-             size_t        msg_iovlen;     /* # elements in msg_iov */
-             void         *msg_control;    /* ancillary data, see below */
-             socklen_t     msg_controllen; /* ancillary data buffer len */
-             int           msg_flags;      /* flags on received message */
+struct msghdr {
+    void         *msg_name;       /* optional address */
+    socklen_t     msg_namelen;    /* size of address */
+    struct iovec *msg_iov;        /* scatter/gather array */
+    size_t        msg_iovlen;     /* # elements in msg_iov */
+    void         *msg_control;    /* ancillary data, see below */
+    socklen_t     msg_controllen; /* ancillary data buffer len */
+    int           msg_flags;      /* flags on received message */
          };
 ```
 查看Linux内核源代码(3.18.1)，可知msghdr的准确定位为：
