@@ -40,5 +40,39 @@ int socketpair(int d, int type, int protocol, int sv[2]);
 即，往sv[0]写入的数据，可以通过sv[1]读出来，往sv[1]写入的数据，也可以通过sv[0]读出来。
 
 ## 关于sendmsg/recvmsg
+通过socket发送数据，主要有三组系统调用，分别是
+1. send/recv(与write/read类似，面向连接的)
+2. sendto/recvfrom(sendto与send的差别在于，sendto可以面向无连接,recvfrom与recv的区别是,recvfrom可以获取sender方的地址)
+3. sendmsg/recvmsg. 通过sendmsg,可以用msghdr参数，来指定多个缓冲区来发送数据，与writev系统调用类似。
 
+sendmsg函数原型如下:
+```
+#include <sys/socket.h>
+ssize_t sendmsg(int sockfd, const struct msghdr *msg, int flags);
+```
+其中，根据POSIX.1 msghdr的定义至少应该包含下面几个成员：
+```
+struct msghdr {
+void *msg_name; /* optional address */
+socklen_t msg_namelen; /* address size in bytes */
+struct iovec *msg_iov; /* array of I/O buffers */
+int msg_iovlen; /* number of elements in array */
+void *msg_control; /* ancillary data */
+socklen_t msg_controllen; /* number of ancillary bytes */
+int msg_flags; /* flags for received message */
+.
+};
+```
+在Linux的manual page中，msghdr的定义为:
+```
+         struct msghdr {
+             void         *msg_name;       /* optional address */
+             socklen_t     msg_namelen;    /* size of address */
+             struct iovec *msg_iov;        /* scatter/gather array */
+             size_t        msg_iovlen;     /* # elements in msg_iov */
+             void         *msg_control;    /* ancillary data, see below */
+             socklen_t     msg_controllen; /* ancillary data buffer len */
+             int           msg_flags;      /* flags on received message */
+         };
+```
 
