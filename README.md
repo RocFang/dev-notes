@@ -1,4 +1,4 @@
-My Awesome Book
+RocFang的编程笔记
 =======
 
-This file file serves as your book's preface, a great place to describe your book's content and ideas.
+这本书最初只是作为测试gitbook的功能而用的,后来就干脆用它来作为我的笔记本了。
