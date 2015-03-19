@@ -160,6 +160,8 @@ CMSG_LEN传入的参数是一个控制信息中的数据部分的大小,返回�
 
 具体的说,为msghdr的成员msg_control分配一个cmsghdr的空间,将该cmsghdr结构的cmsg_level设置为SOL_SOCKET,cmsg_type设置为SCM_RIGHTS,并将要传递的文件描述符作为数据部分,调用sendmsg即可。其中,SCM表示socket-level control message,SCM_RIGHTS表示我们要传递访问权限。
 
+弄清楚了发送部分,文件描述符的接收部分就好说了。跟发送部分一样,为控制信息配置好属性,并在其后分配一个文件描述符的数据部分后，在成功调用recvmsg后,控制信息的数据部分就是在接收进程中的新的文件描述符了,接收进程可直接对该文件描述符进行操作。
+
 ## Nginx中传递文件描述符的代码实现
 关于如何在进程间传递文件描述符,我们已经理的差不多了。下面看看Nginx中是如何做的。
 
@@ -248,3 +250,4 @@ ngx_write_channel(ngx_socket_t s, ngx_channel_t *ch, size_t size,
 
 ```
 其中,参数s就是一个用socketpair创建的管道的一端,要传送的文件描述符位于参数ch所指向的结构体中。ch结构体本身,包含要传送的文件描述符和其他成员,则通过io_vec类型的成员msg_iov传送。
+
