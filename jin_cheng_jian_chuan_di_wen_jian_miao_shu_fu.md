@@ -14,4 +14,26 @@
 
 答案是使用匿名Unix域套接字，即socketpair()和sendmsg/recvmsg来实现。
 
-## 关于
+## 关于socketpair
+
+>UNIX domain sockets provide both stream and datagram interfaces. The UNIX
+domain datagram service is reliable, however. Messages are neither lost nor delivered
+out of order. UNIX domain sockets are like a cross between sockets and pipes. You can
+use the network-oriented socket interfaces with them, or you can use the socketpair
+function to create a pair of unnamed, connected, UNIX domain sockets.
+
+>APUE 3rd edition,17.2
+
+socketpair的原型为：
+```
+#include <sys/types.h>
+#include <sys/socket.h>
+
+int socketpair(int d, int type, int protocol, int sv[2]);
+```
+传入的参数sv为一个整型数组，有两个元素。当调用成功后，这个数组的两个元素即为2个文件描述符。
+
+一对连接起来的Unix匿名域套接字就建立起来了，它们就像一个全双工的管道，每一端都既可读也可写。
+
+![](socket_pair.jpg)
+即，往sv[0]写入的数据，可以通过sv[1]读出来，往sv[1]写入的数据，也可以通过sv[0]读出来。
