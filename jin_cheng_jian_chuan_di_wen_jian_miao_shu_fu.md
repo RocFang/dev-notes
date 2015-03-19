@@ -74,7 +74,7 @@ struct msghdr {
     int           msg_flags;      /* flags on received message */
          };
 ```
-查看Linux内核源代码(3.18.1)，可知msghdr的准确定位为：
+查看Linux内核源代码(3.18.1)，可知msghdr的准确定义为：
 ```
 struct msghdr {
 	void		*msg_name;	/* ptr to socket address structure */
@@ -91,4 +91,10 @@ struct msghdr {
 
 其中，前两个成员msg_name和msg_namelen是用来在发送datagram时，指定目的地址的。如果是面向连接的，这两个成员变量可以不用。
 
-接下来的两个成员,msg_iov和msg_iovlen，则是用来指定发送缓冲区数组的。
+接下来的两个成员,msg_iov和msg_iovlen，则是用来指定发送缓冲区数组的。其中，msg_iovlen是iovec类型的元素的个数。每一个缓冲区的起始地址和大小由iovec类型自包含，iovec的定义为：
+```
+struct iovec {
+    void *iov_base;   /* Starting address */
+    size_t iov_len;   /* Number of bytes */
+         };
+```
