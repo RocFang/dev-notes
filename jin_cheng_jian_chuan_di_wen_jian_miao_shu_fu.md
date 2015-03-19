@@ -75,4 +75,21 @@ int msg_flags; /* flags for received message */
              int           msg_flags;      /* flags on received message */
          };
 ```
+查看Linux内核源代码(3.18.1)，可知msghdr的准确定位为：
+```
+struct msghdr {
+	void		*msg_name;	/* ptr to socket address structure */
+	int		msg_namelen;	/* size of socket address structure */
+	struct iovec	*msg_iov;	/* scatter/gather array */
+	__kernel_size_t	msg_iovlen;	/* # elements in msg_iov */
+	void		*msg_control;	/* ancillary data */
+	__kernel_size_t	msg_controllen;	/* ancillary data buffer length */
+	unsigned int	msg_flags;	/* flags on received message */
+};
 
+```
+可见，与Manual paga中的描述一致。
+
+其中，前两个成员msg_name和msg_namelen是用来在发送datagram时，指定目的地址的。如果是面向连接的，这两个成员变量可以不用。
+
+接下来的两个成员,msg_iov和msg_iovlen，则是用来指定发送缓冲区数组的。
