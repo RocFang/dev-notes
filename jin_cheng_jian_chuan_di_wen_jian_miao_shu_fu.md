@@ -36,4 +36,9 @@ int socketpair(int d, int type, int protocol, int sv[2]);
 一对连接起来的Unix匿名域套接字就建立起来了，它们就像一个全双工的管道，每一端都既可读也可写。
 
 ![](socket_pair.jpg)
+
 即，往sv[0]写入的数据，可以通过sv[1]读出来，往sv[1]写入的数据，也可以通过sv[0]读出来。
+
+## 关于sendmsg/recvmsg
+
+
