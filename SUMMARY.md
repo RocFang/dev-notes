@@ -7,4 +7,5 @@
    * [listen中的backlog参数的含义](backlog_in_listen.md)
    * [进程间传递文件描述符](jin_cheng_jian_chuan_di_wen_jian_miao_shu_fu.md)
 * [计算机体系结构](chapter2.md)
+* Nginx相关
 
