@@ -9,5 +9,5 @@
 * [计算机体系结构](chapter2.md)
 * [Nginx相关](nginxxiang_guan.md)
    * [Nginx中的几个基本模块和几个模块ctx类型](basic_modules_and_ctx_type_in_nginx.md)
-   * Nginx中的ngx_modules数组
+   * [Nginx中的ngx_modules数组](ngx_modules_array_in_nginx.md)
 
