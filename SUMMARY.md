@@ -8,5 +8,5 @@
    * [进程间传递文件描述符](jin_cheng_jian_chuan_di_wen_jian_miao_shu_fu.md)
 * [计算机体系结构](chapter2.md)
 * [Nginx相关](nginxxiang_guan.md)
-   * Nginx中的几个基本模块和几个模块ctx类型
+   * [Nginx中的几个基本模块和几个模块ctx类型](nginxzhong_de_ji_ge_ji_ben_mo_kuai_he_ji_ge_mo_kuai_ctx_lei_xing.md)
 
