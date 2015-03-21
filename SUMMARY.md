@@ -11,4 +11,5 @@
 * [Nginx相关](nginxxiang_guan.md)
    * [Nginx中的几个基本模块和几个模块ctx类型](nginxzhong_de_ji_ge_ji_ben_mo_kuai_he_ji_ge_mo_kuai_ctx_lei_xing.md)
    * [Nginx中的ngx_modules数组](nginxzhong_de_ngx_modules_shu_zu.md)
+   * Nginx中的进程间通信
 
