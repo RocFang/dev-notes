@@ -2,6 +2,8 @@
 
 ## 1.Nginx中的channel通信机制
 
+### 1.1概述
+
 首先简单的说一下Nginx中channel通信的机制。
 
 Nginx中的channel通信，本质上是多个进程之间,利用匿名套接字(socketpair)对来进行通信。
@@ -32,6 +34,7 @@ Nginx中的channel通信，本质上是多个进程之间,利用匿名套接字(
 
 Nginx中也就是这么做的。
 
+### 1.2Nginx中的具体实现
 在ngx_process.c中，定义了一个全局的数组ngx_processes:
 ```
 ngx_process_t    ngx_processes[NGX_MAX_PROCESSES];
