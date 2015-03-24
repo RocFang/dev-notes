@@ -367,5 +367,42 @@ ngx_start_worker_processes(ngx_cycle_t *cycle, ngx_int_t n, ngx_int_t type)
     }
 }
 ```
-其中的for循环即表示，父进程会把刚刚生成的子进程的channel[0],放在一条消息的内容中发送给之前生成的子进程。
+其中的for循环即表示，父进程会把刚刚生成的子进程的channel[0],放在一条消息的内容中发送给之前生成的子进程。消息的格式定义为:
+```
+typedef struct {
+     ngx_uint_t  command;
+     ngx_pid_t   pid;
+     ngx_int_t   slot;
+     ngx_fd_t    fd;
+} ngx_channel_t;
+```
+我们看下ngx_pass_open_channel函数:
+```
+static void
+ngx_pass_open_channel(ngx_cycle_t *cycle, ngx_channel_t *ch)
+{
+    ngx_int_t  i;
+
+    for (i = 0; i < ngx_last_process; i++) {
+
+        if (i == ngx_process_slot
+            || ngx_processes[i].pid == -1
+            || ngx_processes[i].channel[0] == -1)
+        {
+            continue;
+        }
+
+        ngx_log_debug6(NGX_LOG_DEBUG_CORE, cycle->log, 0,
+                      "pass channel s:%d pid:%P fd:%d to s:%i pid:%P fd:%d",
+                      ch->slot, ch->pid, ch->fd,
+                      i, ngx_processes[i].pid,
+                      ngx_processes[i].channel[0]);
+
+        /* TODO: NGX_AGAIN */
+
+        ngx_write_channel(ngx_processes[i].channel[0],
+                          ch, sizeof(ngx_channel_t), cycle->log);
+    }
+}
+```
 ## 2. Nginx中的共享内存
