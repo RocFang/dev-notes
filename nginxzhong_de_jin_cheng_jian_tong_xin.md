@@ -415,5 +415,5 @@ ngx_write_channel函数的第一个参数是之前某个进程从master进程继
 
 但Nginx通过一些close()操作,有意达到这样一种目的:
 * 对任何一个子进程，其ngx_processes数组中，对应其他进程的元素的channel[0],用来向该进程发送消息。
-* 
+* 对任何一个子进程，其ngx_processes数组中，对应本进程的元素的channel[1],用来接收来自其他进程的消息，这个其他进程既包括其他子进程，也包括master进程。
 ## 2. Nginx中的共享内存
