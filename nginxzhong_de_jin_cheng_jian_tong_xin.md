@@ -197,8 +197,72 @@ typedef struct {
 
 下面，将上面所讲的内容，在Nginx代码中的流程，大概梳理一遍。本文所有代码片段，均来自于nginx-1.6.2。
 
+首先是main函数调用ngx_master_process_cycle:
+```
+    if (ngx_process == NGX_PROCESS_SINGLE) {
+        ngx_single_process_cycle(cycle);
 
+    } else {
+        ngx_master_process_cycle(cycle);
+    }
 
+    return 0;
+```
+ngx_master_process_cycle调用ngx_start_worker_processes:
+```
+ccf = (ngx_core_conf_t *) ngx_get_conf(cycle->conf_ctx, ngx_core_module);
 
+ngx_start_worker_processes(cycle, ccf->worker_processes,
+                           NGX_PROCESS_RESPAWN);
+ngx_start_cache_manager_processes(cycle, 0);
+```
+在ngx_start_worker_processes函数中，完成对所有worker进程的fork操作:
+```
+static void
+ngx_start_worker_processes(ngx_cycle_t *cycle, ngx_int_t n, ngx_int_t type)
+{
+    ngx_int_t      i;
+    ngx_channel_t  ch;
+
+    ngx_log_error(NGX_LOG_NOTICE, cycle->log, 0, "start worker processes");
+
+    ngx_memzero(&ch, sizeof(ngx_channel_t));
+
+    ch.command = NGX_CMD_OPEN_CHANNEL;
+
+    for (i = 0; i < n; i++) {
+
+        ngx_spawn_process(cycle, ngx_worker_process_cycle,
+                          (void *) (intptr_t) i, "worker process", type);
+
+        ch.pid = ngx_processes[ngx_process_slot].pid;
+        ch.slot = ngx_process_slot;
+        ch.fd = ngx_processes[ngx_process_slot].channel[0];
+
+        ngx_pass_open_channel(cycle, &ch);
+    }
+}
+```
+上述代码调用的ngx_spawn_process即完成具体的socketpair()操作和fork操作:
+```
+ngx_pid_t
+ngx_spawn_process(ngx_cycle_t *cycle, ngx_spawn_proc_pt proc, void *data,
+     char *name, ngx_int_t respawn)
+{
+       ......
+       if (socketpair(AF_UNIX, SOCK_STREAM, 0, ngx_processes[s].channel) == -1)
+        {
+            ngx_log_error(NGX_LOG_ALERT, cycle->log, ngx_errno,
+                          "socketpair() failed while spawning \"%s\"", name);
+            return NGX_INVALID_PID;
+        }
+        ......
+        ngx_channel = ngx_processes[s].channel[1];
+        ......
+        ngx_process_slot = s;
+        pid = fork();
+        ......
+}
+```
 
 ## 2.Nginx中的共享内存
