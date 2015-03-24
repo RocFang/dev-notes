@@ -405,5 +405,5 @@ ngx_pass_open_channel(ngx_cycle_t *cycle, ngx_channel_t *ch)
     }
 }
 ```
-从该函数定义中，可以很清晰的看到“往之前生成的进程发送消息”。
+从该函数定义中，可以很清晰的看到“往之前生成的每个进程发送消息”。
 ## 2. Nginx中的共享内存
