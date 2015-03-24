@@ -406,4 +406,6 @@ ngx_pass_open_channel(ngx_cycle_t *cycle, ngx_channel_t *ch)
 }
 ```
 从该函数定义中，可以很清晰的看到“往之前生成的每个进程发送消息”。对之前的每个子进程，具体消息发送工作，是由函数ngx_write_channel完成的。
+
+ngx_write_channel函数的第一个参数是
 ## 2. Nginx中的共享内存
