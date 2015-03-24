@@ -414,7 +414,8 @@ ngx_write_channel函数的第一个参数是之前某个进程从master进程继
 值得一提的是，父进程在调用socketpair()产生一个匿名套接字对后，再fork出一个子进程，那么现在有4个文件描述符了。其实对这4个文件描述符中的任何一个进行写入，从其他3个描述符中的任何一个均可以进行读取操作。
 
 但Nginx通过一些close()操作,有意达到这样一种目的:
-* 对任何一个子进程，其ngx_processes数组中，对应其他进程的元素的channel[0],用来向该进程发送消息。
-* 对任何一个子进程，其ngx_processes数组中，对应本进程的元素的channel[1],用来接收来自其他进程的消息，这个其他进程既包括其他子进程，也包括master进程。至于如何区分是来自哪个进程，以及该消息是用来做什么的，则通过判断ngx_channel_t类型的消息的command,pid,slot等成员来协商。
-* 
+* 对任何一个子进程，其ngx_processes数组中，对应其它进程的元素,其channel[0]用来向该"其他进程"发送消息。
+* 对任何一个子进程，其ngx_processes数组中，对应本进程的元素,其channel[1]用来接收来自其他进程的消息，这个其他进程既包括其他子进程，也包括master进程。至于如何区分是来自哪个进程，以及该消息是用来做什么的，则通过判断ngx_channel_t类型的消息的command,pid,slot等成员来协商。
+* 对master进程, 其ngx_processes数组的中，对应相应子进程的元素的channel[0],用来向该子进程发送消息。注:其实channel[1]也可以，但按常理，master进程的ngx_processes数组所有元素的channel[1]应该关闭的。 
+
 ## 2. Nginx中的共享内存
