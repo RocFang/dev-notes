@@ -79,7 +79,7 @@ typedef struct {
 我们直接借助《深入剖析Nginx》，直接看下图的实例:
 
 | ngx_processes数组 | master | worker0 |worker1 | worker2 | worker3 |
-| -- | -- | -- | -- | -- | -- |
+| ----------------- | ------ | ------- | ------ | ------- | ------- |
 | ngx_processes[0].channel | [3,7] | [**-1,7**] | [3,-1] | [3,-1] | [3,-1] |
 | ngx_processes[1].channel | [8,9] | [3,0] | [**-1,9**] | [8,-1] | [8,-1] |
 | ngx_processes[2].channel | [10,11] | [9,0] | [7,0] | [**-1,11**] | [10,-1] |
