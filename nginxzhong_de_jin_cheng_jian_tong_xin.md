@@ -410,4 +410,6 @@ ngx_pass_open_channel(ngx_cycle_t *cycle, ngx_channel_t *ch)
 ngx_write_channel函数的第一个参数是之前某个进程从master进程继承来的channel[0],第二个参数发送的内容。其中包含了当前进程的pid,slot号，command等信息，最重要的是，包含了当前子进程的channel[0]，其实是实现了一个简单的协议。注意，当前子进程的channel[0]虽然存在ngx_channel_t类型的消息体中，但真正文件描述符的传递操作，是ngx_write_channel通过发送控制信息来完成的。接收进程虽然在接收到的消息体中获得了发送进程的channel[0]这个值，但并不能直接使用，必须根据控制信息来获取一个新的文件描述符。参看[进程间传递文件描述符](jin_cheng_jian_chuan_di_wen_jian_miao_shu_fu.md)。
 
 至此，父子进程间的配合，使得所有的子进程均拥有了其他子进程的channel[0]，而另一方面，由于所有子进程的channel[0]已加入到自己的监听事件集，所以子进程之间的通信通道即被建立起来。
+
+值得一提的是，父进程在调用socketpair()产生一个匿名套接字对后，再fork出一个子进程，
 ## 2. Nginx中的共享内存
