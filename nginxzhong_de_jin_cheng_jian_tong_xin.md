@@ -265,4 +265,8 @@ ngx_spawn_process(ngx_cycle_t *cycle, ngx_spawn_proc_pt proc, void *data,
 }
 ```
 在上一段代码中可以看到，master进程在调用socketpair后，将生成的channel[1]保存在全局变量ngx_channel中,ngx_channel全局变量的作用是，子进程中会使用该全局变量，并加入到自己的事件中，达到的效果即是子进程将channel[1]加入到自己的事件中。
+
+话分两头，我们先来具体看看子进程的流程。
+
+
 ## 2. Nginx中的共享内存
