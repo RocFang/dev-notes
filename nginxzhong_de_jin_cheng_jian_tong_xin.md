@@ -64,7 +64,7 @@ typedef struct {
 绘制成表如下:
 
 | ngx_processes数组 | master | worker0 |worker1 | worker2 | worker3 |
-| -- | -- | -- | -- | -- | -- |
+| ----------------- | ------ | ------- | ------ | ------- | ------- |
 | ngx_processes[0].channel | [x,x] | [x,x] | [x,x] | [x,x] | [x,x] |
 | ngx_processes[1].channel | [x,x] | [x,x] | [x,x] | [x,x] | [x,x] |
 | ngx_processes[2].channel | [x,x] | [x,x] | [x,x] | [x,x] | [x,x] |
