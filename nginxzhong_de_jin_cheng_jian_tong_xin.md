@@ -334,4 +334,5 @@ ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
 ......
 }
 ```
+具体的将channel[1]添加到事件集中的操作，是由
 ## 2. Nginx中的共享内存
