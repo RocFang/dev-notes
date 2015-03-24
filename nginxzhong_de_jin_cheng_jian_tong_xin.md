@@ -264,5 +264,5 @@ ngx_spawn_process(ngx_cycle_t *cycle, ngx_spawn_proc_pt proc, void *data,
         ......
 }
 ```
-
+在上一段代码中可以看到，master进程在调用socketpair后，将生成的channel[1]保存在全局变量ngx_channel中,
 ## 2. Nginx中的共享内存
