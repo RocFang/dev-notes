@@ -268,5 +268,25 @@ ngx_spawn_process(ngx_cycle_t *cycle, ngx_spawn_proc_pt proc, void *data,
 
 话分两头，我们先来具体看看子进程的流程。
 
+在主进程执行完fork之后，ngx_start_worker_processes会调用proc回调:
+```
+   pid = fork();
 
+    switch (pid) {
+
+    case -1:
+        ngx_log_error(NGX_LOG_ALERT, cycle->log, ngx_errno,
+                      "fork() failed while spawning \"%s\"", name);
+        ngx_close_channel(ngx_processes[s].channel, cycle->log);
+        return NGX_INVALID_PID;
+
+    case 0:
+        ngx_pid = ngx_getpid();
+        proc(cycle, data);
+        break;
+
+    default:
+        break;
+    }
+```
 ## 2. Nginx中的共享内存
