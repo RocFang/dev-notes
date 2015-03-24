@@ -57,6 +57,23 @@ typedef struct {
     unsigned            exited:1;
 } ngx_process_t;
 ```
-在这里,我们只关心成员channel,
+在这里,我们只关心成员channel成员，这个两元素的数组即用来存放一个匿名套接字对。
+
+我们假设有程序运行后，有1个master进程和4个worker进程。那么，对这5个进程而言，每个进程都有一个4元素的数组ngx_process[4]，数组中每个元素都是一个ngx_process_t类型的结构体，包含了一个worker进程的相关信息。我们这里关心的是每个结构体的channel数组成员。
+
+绘制成表如下:
+
+| ngx_processes数组 | master | worker1 |worker2 | worker3 | worker4 |
+| -- | -- | -- | -- | -- | -- |
+| ngx_processes[0].channel | [x,x] | [x,x] | [x,x] | [x,x] | [x,x] |
+| ngx_processes[1].channel | [x,x] | [x,x] | [x,x] | [x,x] | [x,x] |
+| ngx_processes[2].channel | [x,x] | [x,x] | [x,x] | [x,x] | [x,x] |
+| ngx_processes[3].channel | [x,x] | [x,x] | [x,x] | [x,x] | [x,x] |
+
+上表的每一列表示每个进程的ngx_processes数组的各个元素的channel成员。
+
+其中，master进程列中的每一个元素，表示master进程与对应的每个worker进程之间的匿名套接字对。
+
+而每一个worker进程列中的每一个元素，表示该worker进程与对应的每个worker进程之间的匿名套接字对。
 
 ## 2.Nginx中的共享内存
