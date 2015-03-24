@@ -34,7 +34,7 @@ Nginx中的channel通信，本质上是多个进程之间,利用匿名套接字(
 
 Nginx中也就是这么做的。
 
-### 1.2Nginx中的具体实现
+### 1.2 Nginx中的具体实现
 在ngx_process.c中，定义了一个全局的数组ngx_processes:
 ```
 ngx_process_t    ngx_processes[NGX_MAX_PROCESSES];
