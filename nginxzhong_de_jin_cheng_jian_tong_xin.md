@@ -290,5 +290,48 @@ ngx_spawn_process(ngx_cycle_t *cycle, ngx_spawn_proc_pt proc, void *data,
     }
 ```
 其中,proc即为ngx_worker_process_cycle。ngx_worker_process_cycle会调用ngx_worker_process_init函数，子进程将从父进程处继承到的channel[1]加入到自己的事件集中，就是在这个函数中完成的:
+```
+static void
+ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
+{
+......
+   for (n = 0; n < ngx_last_process; n++) {
 
+        if (ngx_processes[n].pid == -1) {
+            continue;
+        }
+
+        if (n == ngx_process_slot) {
+            continue;
+        }
+
+        if (ngx_processes[n].channel[1] == -1) {
+            continue;
+        }
+
+        if (close(ngx_processes[n].channel[1]) == -1) {
+            ngx_log_error(NGX_LOG_ALERT, cycle->log, ngx_errno,
+                          "close() channel failed");
+        }
+    }
+
+    if (close(ngx_processes[ngx_process_slot].channel[0]) == -1) {
+        ngx_log_error(NGX_LOG_ALERT, cycle->log, ngx_errno,
+                      "close() channel failed");
+    }
+
+#if 0
+    ngx_last_process = 0;
+#endif
+
+    if (ngx_add_channel_event(cycle, ngx_channel, NGX_READ_EVENT,
+                              ngx_channel_handler)
+        == NGX_ERROR)
+    {
+        /* fatal */
+        exit(2);
+    }
+......
+}
+```
 ## 2. Nginx中的共享内存
