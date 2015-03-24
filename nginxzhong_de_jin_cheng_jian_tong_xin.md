@@ -338,5 +338,34 @@ ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
 
 此时，子进程已经将从父进程那里继承来的channel[1]加入到了自己的监听事件集中，这样，一个子进程从自己的ngx_processses数组中，对应自己的那一个元素中的channel[1]中，即可读取来自其他进程的消息。
 
+我们再回到父进程中。
+
+父进程在从ngx_spawn_process返回后，回来继续执行ngx_start_worker_processes:
+```
+static void
+ngx_start_worker_processes(ngx_cycle_t *cycle, ngx_int_t n, ngx_int_t type)
+{
+    ngx_int_t      i;
+    ngx_channel_t  ch;
+
+    ngx_log_error(NGX_LOG_NOTICE, cycle->log, 0, "start worker processes");
+
+    ngx_memzero(&ch, sizeof(ngx_channel_t));
+
+    ch.command = NGX_CMD_OPEN_CHANNEL;
+
+    for (i = 0; i < n; i++) {
+
+        ngx_spawn_process(cycle, ngx_worker_process_cycle,
+                          (void *) (intptr_t) i, "worker process", type);
+
+        ch.pid = ngx_processes[ngx_process_slot].pid;
+        ch.slot = ngx_process_slot;
+        ch.fd = ngx_processes[ngx_process_slot].channel[0];
+
+        ngx_pass_open_channel(cycle, &ch);
+    }
+}
+```
 
 ## 2. Nginx中的共享内存
