@@ -289,4 +289,5 @@ ngx_spawn_process(ngx_cycle_t *cycle, ngx_spawn_proc_pt proc, void *data,
         break;
     }
 ```
+其中,proc即为ngx_worker_process_cycle
 ## 2. Nginx中的共享内存
