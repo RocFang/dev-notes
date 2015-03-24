@@ -335,4 +335,6 @@ ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
 }
 ```
 具体的将channel[1]添加到事件集中的操作，是由ngx_add_channel_event来完成的，同时我们看到，在添加之前，还进行了很多close的工作，这就于之前的示例表里，那些描述符为-1的表项相对应了。
+
+此时，子进程已经将从父进程那里继承来的
 ## 2. Nginx中的共享内存
