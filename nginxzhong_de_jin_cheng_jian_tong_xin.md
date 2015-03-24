@@ -367,5 +367,5 @@ ngx_start_worker_processes(ngx_cycle_t *cycle, ngx_int_t n, ngx_int_t type)
     }
 }
 ```
-其中的for循环即表示，父进程会把刚刚生成的子进程的channel[0],作为
+其中的for循环即表示，父进程会把刚刚生成的子进程的channel[0],放在一条消息的内容中发送给之前生成的子进程。消息
 ## 2. Nginx中的共享内存
