@@ -63,7 +63,7 @@ typedef struct {
 
 绘制成表如下:
 
-| ngx_processes数组 | master | worker1 |worker2 | worker3 | worker4 |
+| ngx_processes数组 | master | worker0 |worker1 | worker2 | worker3 |
 | -- | -- | -- | -- | -- | -- |
 | ngx_processes[0].channel | [x,x] | [x,x] | [x,x] | [x,x] | [x,x] |
 | ngx_processes[1].channel | [x,x] | [x,x] | [x,x] | [x,x] | [x,x] |
@@ -78,7 +78,7 @@ typedef struct {
 
 我们直接借助《深入剖析Nginx》，直接看下图的实例:
 
-| ngx_processes数组 | master | worker1 |worker2 | worker3 | worker4 |
+| ngx_processes数组 | master | worker0 |worker1 | worker2 | worker3 |
 | -- | -- | -- | -- | -- | -- |
 | ngx_processes[0].channel | [3,7] | [**-1,7**] | [3,-1] | [3,-1] | [3,-1] |
 | ngx_processes[1].channel | [8,9] | [3,0] | [**-1,9**] | [8,-1] | [8,-1] |
@@ -89,5 +89,111 @@ typedef struct {
 
 在上表中，每一个单元格的内容[a,b]分别表示channel[0]和channel[1]的值，-1表示这之前是描述符，但在之后被主动close()掉了，0表示这一直都无对应的描述符，其他数字表示对应的描述符值。
 
-每一列数据都表示该列所对应进程与其他进程进行通信的描述符，如果当前列所对应进程为父进程，那么它与其它进程进行通信的描述符都为channel[0](其实channel[1]也可以)；如果当前列所对应的进程为子进程，那么它与父进程进行通信的描述符为channel[1]（注：这里书中说的太简略，应该为如果当前列所对应的进程为子进程，那么它与父进程进行通信的描述符为该进程的ngx_processes数组中，与本进程对应的元素中的channel[1]，在图中即为标粗的对角线部分，即[-1,7],[-1,9],[-1,11],[-1,13]这四对）。
+每一列数据都表示该列所对应进程与其他进程进行通信的描述符，如果当前列所对应进程为父进程，那么它与其它进程进行通信的描述符都为channel[0](其实channel[1]也可以)；如果当前列所对应的进程为子进程，那么它与父进程进行通信的描述符为channel[1]（注：这里书中说的太简略，应该为如果当前列所对应的进程为子进程，那么它与父进程进行通信的描述符为该进程的ngx_processes数组中，与本进程对应的元素中的channel[1]，在图中即为标粗的对角线部分，即[-1,7],[-1,9],[-1,11],[-1,13]这四对），与其它子进程进行通信的描述符都为本进程的ngx_processes数组中与该其它进程对应元素的channel[0]。
+
+比如，[3,7]单元格表示，如果父进程向worker0发送消息，需要使用channel[0]，即描述符3，实际上channel[1]也可以，它的channel[1]为7，没有被close()关闭掉，但一直也没有被使用，所以没有影响，不过按道理应该关闭才是。
+
+再比如，[-1,7]单元格表示如果worker0向master进程发送消息，需要使用channel[1]，即描述符7，它的channel[0]为-1，表示已经close()关闭掉了（Nginx某些地方调用close()时并没有设置对应变量为-1，这里只是为了更好的说明，将已经close()掉的描述符全部标记为-1）。
+
+越是后生成的worker进程，其ngx_processes数组的元素中，channel[0]与父进程对应的ngx_processes数组的元素中的channel[0]值相同的越多，因为基本都是继承而来，但前面生成的worker进程，其channel[0]是通过进程间调用sendmsg传递获得的，所以与父进程对应的channel[0]不一定相等。比如，如果worker0向worker3发送消息，需要使用worker0进程的ngx_processes[3]元素的channel[0],即描述符10，而对应master进程的ngx_processes[3]元素的channel[0]却是12。虽然它们在各自进程里表现为不同的整型数字，但在内核里表示同一个描述符结构，即不管是worker0往描述符10写数据，还是master往描述符12写数据，worker3都能通过描述符13正确读取到这些数据，至于worker3怎么识别它读到的数据是来自worker0，还是master，就得靠其他收到的数据特征，比如pid，来做标记区分。
+
+关于上段讲的，一个子进程如何区分接收到的数据是来自哪一个进程，我们可以看一下Nginx-1.6.2中的一段代码:
+```
+ngx_int_t
+ngx_write_channel(ngx_socket_t s, ngx_channel_t *ch, size_t size,
+    ngx_log_t *log)
+{
+    ssize_t             n;
+    ngx_err_t           err;
+    struct iovec        iov[1];
+    struct msghdr       msg;
+
+#if (NGX_HAVE_MSGHDR_MSG_CONTROL)
+
+    union {
+        struct cmsghdr  cm;
+        char            space[CMSG_SPACE(sizeof(int))];
+    } cmsg;
+
+    if (ch->fd == -1) {
+        msg.msg_control = NULL;
+        msg.msg_controllen = 0;
+
+    } else {
+        msg.msg_control = (caddr_t) &cmsg;
+        msg.msg_controllen = sizeof(cmsg);
+
+        ngx_memzero(&cmsg, sizeof(cmsg));
+
+        cmsg.cm.cmsg_len = CMSG_LEN(sizeof(int));
+        cmsg.cm.cmsg_level = SOL_SOCKET;
+        cmsg.cm.cmsg_type = SCM_RIGHTS;
+
+        /*
+         * We have to use ngx_memcpy() instead of simple
+         *   *(int *) CMSG_DATA(&cmsg.cm) = ch->fd;
+         * because some gcc 4.4 with -O2/3/s optimization issues the warning:
+         *   dereferencing type-punned pointer will break strict-aliasing rules
+         *
+         * Fortunately, gcc with -O1 compiles this ngx_memcpy()
+         * in the same simple assignment as in the code above
+         */
+
+        ngx_memcpy(CMSG_DATA(&cmsg.cm), &ch->fd, sizeof(int));
+    }
+
+    msg.msg_flags = 0;
+
+#else
+
+    if (ch->fd == -1) {
+        msg.msg_accrights = NULL;
+        msg.msg_accrightslen = 0;
+
+    } else {
+        msg.msg_accrights = (caddr_t) &ch->fd;
+        msg.msg_accrightslen = sizeof(int);
+    }
+
+#endif
+
+    iov[0].iov_base = (char *) ch;
+    iov[0].iov_len = size;
+
+    msg.msg_name = NULL;
+    msg.msg_namelen = 0;
+    msg.msg_iov = iov;
+    msg.msg_iovlen = 1;
+
+    n = sendmsg(s, &msg, 0);
+
+    if (n == -1) {
+        err = ngx_errno;
+        if (err == NGX_EAGAIN) {
+            return NGX_AGAIN;
+        }
+
+        ngx_log_error(NGX_LOG_ALERT, log, err, "sendmsg() failed");
+        return NGX_ERROR;
+    }
+
+    return NGX_OK;
+}
+```
+在调用时，参数ch即为发送的数据部分，其类型定义如下:
+```
+typedef struct {
+     ngx_uint_t  command;
+     ngx_pid_t   pid;
+     ngx_int_t   slot;
+     ngx_fd_t    fd;
+} ngx_channel_t;
+```
+可见，其中就包含了发送方的pid。
+
+最后，就目前Nginx代码来看，子进程并没有往父进程发送任何消息，子进程之间也没有相互通信的逻辑。也许是因为Nginx有其他一些更好的进程通信方式，比如共享内存等，所以这种channel通信目前仅作为父进程往子进程发送消息使用。但由于有这个架构在，可以很轻松使用channel机制来完成各进程间的通信任务。
+
+
+
+
 ## 2.Nginx中的共享内存
