@@ -265,4 +265,4 @@ ngx_spawn_process(ngx_cycle_t *cycle, ngx_spawn_proc_pt proc, void *data,
 }
 ```
 
-## 2.Nginx中的共享内存
+## 2. Nginx中的共享内存
