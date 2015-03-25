@@ -334,9 +334,26 @@ ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
 ......
 }
 ```
-具体的将channel[1]添加到事件集中的操作，是由ngx_add_channel_event来完成的，同时我们看到，在添加之前，还进行了很多close的工作，这就于之前的示例表里，那些描述符为-1的表项相对应了。
+具体的将channel[1]添加到事件集中的操作，是由ngx_add_channel_event来完成的，对应的回调处理函数为ngx_channel_handler,同时我们看到，在添加之前，还进行了很多close的工作，这就于之前的示例表里，那些描述符为-1的表项相对应了。
 
-此时，子进程已经将从父进程那里继承来的channel[1]加入到了自己的监听事件集中，这样，一个子进程从自己的ngx_processses数组中，对应自己的那一个元素中的channel[1]中，即可读取来自其他进程的消息。
+此时，子进程已经将从父进程那里继承来的channel[1]加入到了自己的监听事件集中，这样，一个子进程从自己的ngx_processses数组中，对应自己的那一个元素中的channel[1]中，即可读取来自其他进程的消息。收到消息时，将执行设置好的回调函数ngx_channel_handler，把接收到的新子进程的相关信息存储在自己的全局变量ngx_processes数组内。见下面的代码:
+```
+static void
+ngx_channel_handler(ngx_event_t *ev)
+{
+    ......
+          case NGX_CMD_OPEN_CHANNEL:
+
+            ngx_log_debug3(NGX_LOG_DEBUG_CORE, ev->log, 0,
+                           "get channel s:%i pid:%P fd:%d",
+                           ch.slot, ch.pid, ch.fd);
+
+            ngx_processes[ch.slot].pid = ch.pid;
+            ngx_processes[ch.slot].channel[0] = ch.fd;
+            break;
+    ......
+}
+```
 
 我们再回到父进程中。
 
