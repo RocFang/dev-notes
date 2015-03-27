@@ -436,3 +436,4 @@ ngx_write_channel函数的第一个参数是之前某个进程从master进程继
 * 对master进程, 其ngx_processes数组的中，对应相应子进程的元素的channel[0],用来向该子进程发送消息。注:其实channel[1]也可以，但按常理，master进程的ngx_processes数组所有元素的channel[1]应该关闭的。 
 
 ## 2. Nginx中的共享内存
+
