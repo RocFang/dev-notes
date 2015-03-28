@@ -7,7 +7,7 @@
 
 本文主要结合代码讲一下前两种方式，匿名套接字对和共享内存在Nginx中的使用。
 
-## 1.Nginx中的channel通信机制
+## 1. Nginx中的channel通信机制
 
 ### 1.1概述
 
@@ -599,6 +599,6 @@ ngx_shm_free(ngx_shm_t *shm)
 
 另外，关于上面三种情况的判断，都是通过相应的宏是否定义来进行的，而相应的宏的定义，是在auto/unix脚本中进行的，该脚本会写一端测试程序来判断相应的系统调用是否支持，如果支持，则在configure后自动生成的objs/ngx_auto_config.h文件中定义对应的宏。
 
-## channel机制和共享内存在Nginx中的使用情况
+## 3. channel机制和共享内存在Nginx中的使用情况
 前面讲Nginx中的channel机制时提到，Nginx虽然提供了这种机制，但目前很少用到，而共享内存却相对用的比较多了。例如，为了统计Nginx总体的http请求处理情况，需要跨越多个worker来计算，Nginx自带的http模块ngx_http_stub_status_module即主要依赖共享内存的方式。
 
