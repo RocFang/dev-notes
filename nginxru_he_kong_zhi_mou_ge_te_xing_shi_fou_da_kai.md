@@ -122,6 +122,7 @@ have=$ngx_have_feature . auto/have
 最终，have在configure、auto/unix、auto/feature、auto/have各个脚本的通力合作下，在objs/ngx\_auto\_config.h中就有了对NGX\_HAVE\_POSIX\_MEMALIGN和NGX\_HAVE\_MEMALIGN的定义，进而影响到ngx\_memalign接口的实现。
 
 让我们从需求出发，将接口ngx\_memalign的需求描述一遍：
+
 1. 如果系统支持posix\_memalign，则ngx\_memalign是对posix\_memalign的简单封装。
 2. 如果系统不支持posix\_memalign，但支持memalign，则ngx\_memalign是对memalign的简单封装。
 3. 如果系统竟然对posix\_memalign和memalign都不支持，则ngx\_memalign是对malloc的简单封装。
