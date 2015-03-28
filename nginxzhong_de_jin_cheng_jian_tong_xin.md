@@ -585,6 +585,6 @@ ngx_shm_free(ngx_shm_t *shm)
 2. 如果1不满足，则如果当前系统mmap系统调用支持映射/dev/zero设备，则使用mmap映射/dev/zero的方式来实现。
 3. 如果上面1和2都不满足，且如果当前系统支持shmget系统调用的话，则使用该系统调用来实现。
 
-看到这里，也许
+看到这里，也许大家就有疑问了，
 前面讲Nginx中的channel机制时提到，Nginx虽然提供了这种机制，但目前很少用到，而共享内存却相对用的比较多了。例如，为了统计Nginx总体的http请求处理情况，需要跨越多个worker来计算，Nginx自带的http模块ngx_http_stub_status_module即主要依赖共享内存的方式。
 
