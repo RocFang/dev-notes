@@ -1,5 +1,7 @@
 # Nginx中的进程间通信
 
+我们知道,Linux中
+
 ## 1.Nginx中的channel通信机制
 
 ### 1.1概述
