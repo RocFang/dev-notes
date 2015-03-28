@@ -454,6 +454,7 @@ Linux中，共享内存可以通过两个系统系统调用来获得，mmap和sh
 2. [Linux环境进程间通信（五）: 共享内存（下）](http://www.ibm.com/developerworks/cn/linux/l-ipc/part5/index2.html)
 3. APUE,14.8,15.9
 
+### 2.2 Nginx中的实现
 那么，在Nginx中，到底是选用mmap映射到/dev/null，还是使用MAP_ANON选项调用mmap，或者是使用shmget呢？看相关实现的代码就会一目了然:
 ```
 /*
