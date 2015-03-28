@@ -96,13 +96,13 @@ typedef struct {
 
 在上表中，每一个单元格的内容[a,b]分别表示channel[0]和channel[1]的值，-1表示这之前是描述符，但在之后被主动close()掉了，0表示这一直都无对应的描述符，其他数字表示对应的描述符值。
 
-每一列数据都表示该列所对应进程与其他进程进行通信的描述符，如果当前列所对应进程为父进程，那么它与其它进程进行通信的描述符都为channel[0](其实channel[1]也可以)；如果当前列所对应的进程为子进程，那么它与父进程进行通信的描述符为channel[1]（注：这里书中说的太简略，应该为如果当前列所对应的进程为子进程，那么它与父进程进行通信的描述符为该进程的ngx_processes数组中，与本进程对应的元素中的channel[1]，在图中即为标粗的对角线部分，即[-1,7],[-1,9],[-1,11],[-1,13]这四对），与其它子进程进行通信的描述符都为本进程的ngx_processes数组中与该其它进程对应元素的channel[0]。
+每一列数据都表示该列所对应进程与其他进程进行通信的描述符，如果当前列所对应进程为父进程，那么它与其它进程进行通信的描述符都为channel\[0\](其实channel\[1\]也可以)；如果当前列所对应的进程为子进程，那么它与父进程进行通信的描述符为channel\[1\]（注：这里书中说的太简略，应该为如果当前列所对应的进程为子进程，那么它与父进程进行通信的描述符为该进程的ngx_processes数组中，与本进程对应的元素中的channel\[1\]，在图中即为标粗的对角线部分，即\[-1,7\],\[-1,9\],\[-1,11\],\[-1,13\]这四对），与其它子进程进行通信的描述符都为本进程的ngx_processes数组中与该其它进程对应元素的channel\[0\]。
 
-比如，[3,7]单元格表示，如果父进程向worker0发送消息，需要使用channel[0]，即描述符3，实际上channel[1]也可以，它的channel[1]为7，没有被close()关闭掉，但一直也没有被使用，所以没有影响，不过按道理应该关闭才是。
+比如，\[3,7\]单元格表示，如果父进程向worker0发送消息，需要使用channel\[0\]，即描述符3，实际上channel\[1\]也可以，它的channel\[1\]为7，没有被close()关闭掉，但一直也没有被使用，所以没有影响，不过按道理应该关闭才是。
 
-再比如，[-1,7]单元格表示如果worker0向master进程发送消息，需要使用channel[1]，即描述符7，它的channel[0]为-1，表示已经close()关闭掉了（Nginx某些地方调用close()时并没有设置对应变量为-1，这里只是为了更好的说明，将已经close()掉的描述符全部标记为-1）。
+再比如，\[-1,7\]单元格表示如果worker0向master进程发送消息，需要使用channel\[1\]，即描述符7，它的channel\[0\]为-1，表示已经close()关闭掉了（Nginx某些地方调用close()时并没有设置对应变量为-1，这里只是为了更好的说明，将已经close()掉的描述符全部标记为-1）。
 
-越是后生成的worker进程，其ngx_processes数组的元素中，channel[0]与父进程对应的ngx_processes数组的元素中的channel[0]值相同的越多，因为基本都是继承而来，但前面生成的worker进程，其channel[0]是通过进程间调用sendmsg传递获得的，所以与父进程对应的channel[0]不一定相等。比如，如果worker0向worker3发送消息，需要使用worker0进程的ngx_processes[3]元素的channel[0],即描述符10，而对应master进程的ngx_processes[3]元素的channel[0]却是12。虽然它们在各自进程里表现为不同的整型数字，但在内核里表示同一个描述符结构，即不管是worker0往描述符10写数据，还是master往描述符12写数据，worker3都能通过描述符13正确读取到这些数据，至于worker3怎么识别它读到的数据是来自worker0，还是master，就得靠其他收到的数据特征，比如pid，来做标记区分。
+越是后生成的worker进程，其ngx_processes数组的元素中，channel\[0\]与父进程对应的ngx_processes数组的元素中的channel\[0\]值相同的越多，因为基本都是继承而来，但前面生成的worker进程，其channel\[0\]是通过进程间调用sendmsg传递获得的，所以与父进程对应的channel\[0\]不一定相等。比如，如果worker0向worker3发送消息，需要使用worker0进程的ngx_processes[3]元素的channel\[0\],即描述符10，而对应master进程的ngx_processes\[3\]元素的channel\[0\]却是12。虽然它们在各自进程里表现为不同的整型数字，但在内核里表示同一个描述符结构，即不管是worker0往描述符10写数据，还是master往描述符12写数据，worker3都能通过描述符13正确读取到这些数据，至于worker3怎么识别它读到的数据是来自worker0，还是master，就得靠其他收到的数据特征，比如pid，来做标记区分。
 
 关于上段讲的，一个子进程如何区分接收到的数据是来自哪一个进程，我们可以看一下Nginx-1.6.2中的一段代码:
 ```
@@ -271,7 +271,7 @@ ngx_spawn_process(ngx_cycle_t *cycle, ngx_spawn_proc_pt proc, void *data,
         ......
 }
 ```
-在上一段代码中可以看到，master进程在调用socketpair后，将生成的channel[1]保存在全局变量ngx_channel中,ngx_channel全局变量的作用是，子进程中会使用该全局变量，并加入到自己的事件中，达到的效果即是子进程将channel[1]加入到自己的事件中。
+在上一段代码中可以看到，master进程在调用socketpair后，将生成的channel\[1\]保存在全局变量ngx_channel中,ngx_channel全局变量的作用是，子进程中会使用该全局变量，并加入到自己的事件中，达到的效果即是子进程将channel\[1\]加入到自己的事件中。
 
 话分两头，我们先来具体看看子进程的流程。
 
@@ -296,7 +296,7 @@ ngx_spawn_process(ngx_cycle_t *cycle, ngx_spawn_proc_pt proc, void *data,
         break;
     }
 ```
-其中,proc即为ngx_worker_process_cycle。ngx_worker_process_cycle会调用ngx_worker_process_init函数，子进程将从父进程处继承到的channel[1]加入到自己的事件集中，就是在这个函数中完成的:
+其中,proc即为ngx_worker_process_cycle。ngx_worker_process_cycle会调用ngx_worker_process_init函数，子进程将从父进程处继承到的channel\[1\]加入到自己的事件集中，就是在这个函数中完成的:
 ```
 static void
 ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
