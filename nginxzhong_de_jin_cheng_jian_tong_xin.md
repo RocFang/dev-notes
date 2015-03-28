@@ -441,4 +441,4 @@ ngx_write_channel函数的第一个参数是之前某个进程从master进程继
 
 >陶辉《深入理解Nginx》
 
-
+在前面讲Nginx中的channel机制时提到，Nginx虽然提供了这种机制，但目前很少用到，而共享内存却相对用的比较多了。
