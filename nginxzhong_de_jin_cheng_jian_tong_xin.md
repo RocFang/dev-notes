@@ -1,6 +1,6 @@
 # Nginx中的进程间通信
 
-我们知道,Linux中
+我们知道,Linux提供了多种进程间传递消息的方式
 
 ## 1.Nginx中的channel通信机制
 
