@@ -452,7 +452,7 @@ Linux中，共享内存可以通过两个系统系统调用来获得，mmap和sh
 2. [Linux环境进程间通信（五）: 共享内存（下）](http://www.ibm.com/developerworks/cn/linux/l-ipc/part5/index2.html)
 3. APUE,14.8,15.9
 
-那么，在Nginx中，到底是选用
+那么，在Nginx中，到底是选用mmap映射到/dev/null，还是使用MAP_ANON选项调用mmap，或者是使用shmget呢？答案是
 
 前面讲Nginx中的channel机制时提到，Nginx虽然提供了这种机制，但目前很少用到，而共享内存却相对用的比较多了。例如，为了统计Nginx总体的http请求处理情况，需要跨越多个worker来计算，Nginx自带的http模块ngx_http_stub_status_module即主要依赖共享内存的方式。
 
