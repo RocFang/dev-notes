@@ -581,6 +581,6 @@ ngx_shm_free(ngx_shm_t *shm)
 #endif
 ```
 上面的代码即是Nginx源代码中的src/os/unix/ngx_shemem.c的全部内容。可见，整个文件只是为了提供两个接口：ngx_shm_alloc和ngx_shm_free。而这两个接口的实现，按如下逻辑来决定:
-1. 如果当前系统的mmap系统调用支持MAP_ANON选项，
+1. 如果当前系统的mmap系统调用支持MAP_ANON选项，则使用带MAP_ANON选项的mmap。
 前面讲Nginx中的channel机制时提到，Nginx虽然提供了这种机制，但目前很少用到，而共享内存却相对用的比较多了。例如，为了统计Nginx总体的http请求处理情况，需要跨越多个worker来计算，Nginx自带的http模块ngx_http_stub_status_module即主要依赖共享内存的方式。
 
