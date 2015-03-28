@@ -437,3 +437,4 @@ ngx_write_channel函数的第一个参数是之前某个进程从master进程继
 
 ## 2. Nginx中的共享内存
 
+>共享内存是
