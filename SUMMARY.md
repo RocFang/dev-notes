@@ -14,5 +14,5 @@
    * [Nginx中的进程间通信](nginxzhong_de_jin_cheng_jian_tong_xin.md)
    * [Nginx如何控制某个特性是否打开](nginxru_he_kong_zhi_mou_ge_te_xing_shi_fou_da_kai.md)
 * [系统编程](xi_tong_bian_cheng.md)
-   * O_EXCL的作用
+   * [O_EXCL的作用](oexcl_de_zuo_yong.md)
 
