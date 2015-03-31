@@ -47,7 +47,7 @@ link的作用是为oldpath指定的源文件创建一个newpath指定的链接�
 6. 进程B退出。
 
 ## 4. O\_EXCL|O\_CREATE确实有可能是非原子的
-在NFS上，O\_EXCL|O\CREATE确实有可能是非原子的：
+在NFS上，O\_EXCL|O\_CREATE确实有可能是非原子的：
 >On NFS, O\_EXCL is supported only when using NFSv3 or later on
               kernel 2.6 or later.  In NFS environments where O\_EXCL support
               is not provided, programs that rely on it for performing
