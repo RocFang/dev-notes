@@ -15,6 +15,7 @@
    * [Nginx如何控制某个特性是否打开](nginxru_he_kong_zhi_mou_ge_te_xing_shi_fou_da_kai.md)
    * [用proxy_intercept_errors和recursive_error_pages代理多次302](yong_proxy_intercept_errors_he_recursive_error_pages_dai_li_duo_ci_302.md)
    * [ngx.var.arg与ngx.req.get_uri_args的区别](ngxvarargyu_ngx__req__get_uri_args_de_qu_bie.md)
+   * 关于nginx中的host变量
 * [系统编程](xi_tong_bian_cheng.md)
    * [O_EXCL的作用](oexcl_de_zuo_yong.md)
 
