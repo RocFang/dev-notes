@@ -22,8 +22,7 @@ struct ngx_command_s {
 * 模块类型都是NGX\_CORE\_MODULE
 * 指令类型NGX\_DIRECT\_CONF都是与NGX\_MAIN\_CONF共同出现
 
-在
-Nginx-1.6.2中，ngx_core_module_t类型的模块（即ctx成员为ngx_core_module_t类型的ngx_module_t变量)包括：
+在[Nginx中的几个基本模块和几个模块ctx类型](nginxzhong_de_ji_ge_ji_ben_mo_kuai_he_ji_ge_mo_kuai_ctx_lei_xing.md)中，我们讲过，Nginx-1.6.2中，ngx_core_module_t类型的模块（即ctx成员为ngx_core_module_t类型的ngx_module_t变量，也即type成员为NGX\_CORE\_MODULE的ngx_module_t变量)包括：
 
 1. ngx_core_module
 2. ngx_events_module
@@ -33,4 +32,13 @@ Nginx-1.6.2中，ngx_core_module_t类型的模块（即ctx成员为ngx_core_modu
 6. ngx_errlog_module
 7. ngx_mail_module
 8. ngx_regex_module
+
+这些NGX\_CORE\_MODULE类型的模块中，还有如下几个，其配置指令集中没有NGX\_DIRECT\_CONF类型的指令:
+
+1. ngx_events_module
+2. ngx_http_module
+3. ngx_errlog_module
+4. ngx_mail_module
+
+
 
