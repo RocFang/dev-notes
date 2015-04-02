@@ -32,30 +32,30 @@ location /some/path/ {
 测试部分如下。
 
 如果配置为：
-
->server {
+```
+server {
                 listen 9090;
                 access\_log /home/strider/project/nginx/nginx-1.4.2/log/access\_9090.log;
                 location /test1/test2/{
                 proxy\_pass http://127.0.0.1:8090;
                 }   
             }   
-
+```
 则有如下对应关系：
 ```
 127.0.0.1:9090/test1/test2/echo1----->127.0.0.1:8090/test1/test2/echo1
 127.0.0.1:9090/test1/test2/---->127.0.0.1:8090/test1/test2
 ```
 如果配置为：
-
->server {
+```
+server {
                 listen 9090;
                 access\_log /home/strider/project/nginx/nginx-1.4.2/log/access\_9090.log;
                 location /test1/test2/{
                 proxy\_pass http://127.0.0.1:8090/;
                 }   
             }   
-
+```
 则有如下对应关系：
 ```
 127.0.0.1:9090/test1/test2/echo1----->127.0.0.1:8090/echo1
@@ -63,29 +63,30 @@ location /some/path/ {
 ```
 
 如果配置为：
->server {
+```
+server {
                 listen 9090;
                 access\_log /home/strider/project/nginx/nginx-1.4.2/log/access\_9090.log;
                 location /test1/test2/{
                         proxy\_pass http://127.0.0.1:8090/test1;
                         }   
-            }  
- 
+        }  
+```
 则有如下对应关系：
 ```
 127.0.0.1:9090/test1/test2/echo1----->127.0.0.1:8090/test1echo1
 127.0.0.1:9090/test1/test2/---->127.0.0.1:8090/test1
 ```
 如果配置为：
-
->server {
+```
+server {
                 listen 9090;
                 access\_log /home/strider/project/nginx/nginx-1.4.2/log/access\_9090.log;
                 location /test1/test2/{
                         proxy\_pass http://127.0.0.1:8090/test3/test4/test5;
                         }   
-            }   
-
+        }   
+```
 则有如下对应关系：
 ```
 127.0.0.1:9090/test1/test2/echo1----->127.0.0.1:8090/test3/test4/test5echo1
