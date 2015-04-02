@@ -17,7 +17,7 @@
    * [ngx.var.arg与ngx.req.get_uri_args的区别](ngxvarargyu_ngx__req__get_uri_args_de_qu_bie.md)
    * [关于nginx中的host变量](guan_yu_nginx_zhong_de_host_bian_liang.md)
    * [关于proxy_pass的参数路径问题](guan_yu_proxy_pass_de_can_shu_lu_jing_wen_ti.md)
-   * Nginx的配置解析系统
+   * [Nginx的配置解析系统](nginxde_pei_zhi_jie_xi_xi_tong.md)
 * [系统编程](xi_tong_bian_cheng.md)
    * [O_EXCL的作用](oexcl_de_zuo_yong.md)
 
