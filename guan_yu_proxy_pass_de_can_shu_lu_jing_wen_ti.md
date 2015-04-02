@@ -37,9 +37,9 @@ server {
                 listen 9090;
                 access\_log /home/strider/project/nginx/nginx-1.4.2/log/access\_9090.log;
                 location /test1/test2/{
-                proxy\_pass http://127.0.0.1:8090;
+                    proxy\_pass http://127.0.0.1:8090;
                 }   
-            }   
+        }   
 ```
 则有如下对应关系：
 ```
@@ -52,9 +52,9 @@ server {
                 listen 9090;
                 access\_log /home/strider/project/nginx/nginx-1.4.2/log/access\_9090.log;
                 location /test1/test2/{
-                proxy\_pass http://127.0.0.1:8090/;
+                    proxy\_pass http://127.0.0.1:8090/;
                 }   
-            }   
+}   
 ```
 则有如下对应关系：
 ```
@@ -69,8 +69,8 @@ server {
                 access\_log /home/strider/project/nginx/nginx-1.4.2/log/access\_9090.log;
                 location /test1/test2/{
                         proxy\_pass http://127.0.0.1:8090/test1;
-                        }   
-        }  
+                }   
+}  
 ```
 则有如下对应关系：
 ```
@@ -84,8 +84,8 @@ server {
                 access\_log /home/strider/project/nginx/nginx-1.4.2/log/access\_9090.log;
                 location /test1/test2/{
                         proxy\_pass http://127.0.0.1:8090/test3/test4/test5;
-                        }   
-        }   
+                }   
+}   
 ```
 则有如下对应关系：
 ```
