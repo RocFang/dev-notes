@@ -40,5 +40,14 @@ struct ngx_command_s {
 3. ngx_errlog_module
 4. ngx_mail_module
 
+其中：
+
+1. ngx_events_module模块只有一个指令"events",是一个配置块类型的指令，即指令类型包含NGX\_CONF\_BLOCK.
+2. ngx_http_module模块只有一个指令"http",同样是一个配置块类型的指令,即指令类型包含NGX\_CONF\_BLOCK.
+3. ngx_errlog_module
+4. ngx_mail_module模块有两个指令“mail”和“imap”，且都是配置块类型的指令，即指令类型包括NGX\_CONF\_BLOCK.
+
+
+
 
 
