@@ -87,7 +87,7 @@ struct ngx_command_s {
 * ngx_mail_module模块的mail指令和imap指令
 * ngx_mail_core_module模块的server指令
 
-列出这些不是为了去死记硬背。而是我们可以很直观的了解到,NGX_CONF_BLOCK属性只能表示该命令后面跟的是一个复杂配置项。
+列出这些不是为了去死记硬背。而是我们可以很直观的了解到,NGX_CONF_BLOCK属性只能表示该命令后面跟的是一个复杂配置项而已。
 
 
 
