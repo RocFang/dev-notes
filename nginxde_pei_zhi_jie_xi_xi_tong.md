@@ -1,6 +1,6 @@
 # Nginx的配置解析系统
 
-## NGX_MAIN_CONF和NGX_DIRECT_CONF
+## 几个重要的指令类型属性
 
 我们知道，每一个Nginx的模块就是对应一个ngx_module_t类型的结构体，该结构体的commands成员是一个数组，里面包括了该模块的配置指令。每一个commands成员是ngx_command_t类型的结构体，其定义如下:
 ```
@@ -13,7 +13,11 @@ struct ngx_command_s {
     void                 *post;
 };
 ```
-我们重点关注这个type成员。
+我们重点关注这个type成员。有如下几个比较重要的type属性需要着重熟悉:
+* NGX_MAIN_CONF
+* NGX_DIRECT_CONF
+* NGX_CONF_BLOCK
+
 搜索一下nginx-1.6.2的源代码，发现，type值包含了NGX\_DIRECT\_CONF的指令所在的模块分别是:
 * ngx\_core\_module模块的所有指令。
 * ngx\_openssl\_module模块的所有指令。其实只有一个ssl\_engine
