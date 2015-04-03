@@ -1,5 +1,7 @@
 # Nginx的配置解析系统
 
+## 配置指令的类型
+
 我们知道，每一个Nginx的模块就是对应一个ngx_module_t类型的结构体，该结构体的commands成员是一个数组，里面包括了该模块的配置指令。每一个commands成员是ngx_command_t类型的结构体，其定义如下:
 ```
 struct ngx_command_s {
