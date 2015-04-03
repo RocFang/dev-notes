@@ -62,7 +62,9 @@ struct ngx_command_s {
 
 这几个模块有如下共同点:
 * 模块类型都是NGX_CORE_MODULE
-* 
+
+所以，综上，在nginx-1.6.2中，关于NGX_MAIN_CONF和NGX_DIRECT_CONF有如下几点:
+* NGX_MAIN_CONF和NGX_DIRECT_CONF都只会出现在NGX_CORE_MODULE类型的模块中。
 
 
 
