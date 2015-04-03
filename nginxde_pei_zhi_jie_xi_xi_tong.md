@@ -14,7 +14,7 @@ struct ngx_command_s {
 };
 ```
 我们重点关注这个type成员。
-搜索一下nginx-1.6.2的源代码，发现，type值为NGX\_DIRECT\_CONF的指令所在的模块分别是:
+搜索一下nginx-1.6.2的源代码，发现，type值包含了NGX\_DIRECT\_CONF的指令所在的模块分别是:
 * ngx\_core\_module模块的所有指令。
 * ngx\_openssl\_module模块的所有指令。其实只有一个ssl\_engine
 * ngx\_google\_perftools\_module模块的所有指令。其实只有一个google\_perftools\_profiles
@@ -48,6 +48,8 @@ struct ngx_command_s {
 2. ngx_http_module模块只有一个指令"http",同样是一个配置块类型的指令,即指令类型包含NGX\_CONF\_BLOCK.
 3. ngx_errlog_module
 4. ngx_mail_module模块有两个指令“mail”和“imap”，且都是配置块类型的指令，即指令类型包括NGX\_CONF\_BLOCK.
+
+
 
 
 
