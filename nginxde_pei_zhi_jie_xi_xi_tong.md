@@ -57,6 +57,7 @@ struct ngx_command_s {
 * ngx_http_module模块的所有指令，其实只有一个"http".
 * ngx_errlog_module模块的所有指令，其实只有一个"error_log"
 * ngx_mail_module模块的所有指令，包含"mail"和"imap"
+* ngx_regex_module模块的所有指令，包含"pcre_jit"
 * 
 
 
