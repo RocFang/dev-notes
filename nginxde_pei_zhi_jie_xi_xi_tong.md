@@ -73,6 +73,21 @@ struct ngx_command_s {
 * 所有NGX_CORE_MODULE类型的模块，除了**ngx\_errlog\_module**模块外,其指令如果没有NGX_DIRECT_CONF属性，则会有NGX_CONF_BLOCK属性。ngx_errlog_module模块比较特殊，其指令属性为“NGX_MAIN_CONF|NGX_CONF_1MORE”
 * 所有的nginx模块中，NGX_DIRECT_CONF和NGX_CONF_BLOCK属性不会同时出现。
 
+另外，type值包含了NGX_CONF_BLOCK属性的指令所在的模块有:
+
+* ngx_events_module模块，指令只有“events”
+* ngx_http_module模块，指令只有“http”
+* ngx_http_charset_filter_module模块的“charset_map”指令
+* ngx_http_core_module模块的server指令、location指令、types指令、limit_except指令
+* ngx_http_geo_module模块的geo指令
+* ngx_http_map_module模块的map指令
+* ngx_http_rewrite_module模块的if指令
+* ngx_http_split_clients_module模块的split_clients指令
+* ngx_http_upstream_module模块的upstream指令
+* ngx_mail_module模块的mail指令和imap指令
+* ngx_mail_core_module模块的server指令
+
+
 
 
 
