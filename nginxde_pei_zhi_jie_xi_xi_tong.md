@@ -49,7 +49,8 @@ struct ngx_command_s {
 3. ngx_errlog_module
 4. ngx_mail_module模块有两个指令“mail”和“imap”，且都是配置块类型的指令，即指令类型包括NGX\_CONF\_BLOCK.
 
-搜索nginx-1.6.2代码，发现type值包含了NGX\_MAIN\_CONF的指令所在的模块为:
+搜索nginx-1.6.2代码，发现type值包含了NGX\_MAIN\_CONF的指令所在的模块
+为:
 * ngx\_core\_module模块的所有指令。
 * ngx_events_module模块的所有指令。其实只有一个“events”
 * ngx_openssl_module模块的所有指令。其实只有一个“ssl_engine”
@@ -58,6 +59,10 @@ struct ngx_command_s {
 * ngx_errlog_module模块的所有指令，其实只有一个"error_log"
 * ngx_mail_module模块的所有指令，包含"mail"和"imap"
 * ngx_regex_module模块的所有指令，包含"pcre_jit"
+
+这几个模块有如下共同点:
+* 模块类型都是NGX_CORE_MODULE
+* 
 
 
 
