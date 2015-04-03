@@ -66,7 +66,8 @@ struct ngx_command_s {
 所以，综上，在nginx-1.6.2中，关于NGX_MAIN_CONF和NGX_DIRECT_CONF有如下几点:
 * NGX_MAIN_CONF和NGX_DIRECT_CONF都只会出现在NGX_CORE_MODULE类型的模块中。
 * 所有的NGX_CORE_MODULE类型的模块，其指令均有NGX_MAIN_CONF属性
-* 所有NGX_CORE_MODULE类型的模块，除了**ngx\_errlog\_module**模块外,其指令如果没有NGX_DIRECT_CONF属性，则会有NGX_CONF_BLOCK属性。
+* 所有NGX_CORE_MODULE类型的模块，除了**ngx\_errlog\_module**模块外,其指令如果没有NGX_DIRECT_CONF属性，则会有NGX_CONF_BLOCK属性。ngx_errlog_module模块比较特殊，其指令属性为“NGX_MAIN_CONF|NGX_CONF_1MORE”
+* 所有的nginx模块中，NGX_DIRECT_CONF和NGX_CONF_BLOCK不会同时出现在一个指令中。
 
 
 
