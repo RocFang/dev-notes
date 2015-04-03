@@ -49,6 +49,7 @@ struct ngx_command_s {
 3. ngx_errlog_module
 4. ngx_mail_module模块有两个指令“mail”和“imap”，且都是配置块类型的指令，即指令类型包括NGX\_CONF\_BLOCK.
 
+搜索nginx-1.6.2代码，发现type值包含了NGX\_MAIN\_CONF的指令所在的模块为:
 
 
 
