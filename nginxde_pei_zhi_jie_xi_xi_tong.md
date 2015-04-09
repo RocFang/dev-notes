@@ -89,7 +89,14 @@ struct ngx_command_s {
 
 列出这些不是为了去死记硬背。而是我们可以很直观的了解到,NGX_CONF_BLOCK属性只能表示该命令后面跟的是一个复杂配置项而已。
 
+## Nginx配置解析的流程
+
+Nginx配置解析的流程如下图所示:
+![](nginx-config-process.jpg)
+
+
 参考文章http://tech.uc.cn/?p=300
+
 
 
 
