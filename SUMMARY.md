@@ -20,5 +20,5 @@
    * [Nginx的配置解析系统](nginxde_pei_zhi_jie_xi_xi_tong.md)
 * [系统编程](xi_tong_bian_cheng.md)
    * [O_EXCL的作用](oexcl_de_zuo_yong.md)
-   * vfork 挂掉的一个问题
+   * [vfork 挂掉的一个问题](vfork_gua_diao_de_yi_ge_wen_ti.md)
 
