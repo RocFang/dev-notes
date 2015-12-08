@@ -53,16 +53,22 @@ ngx_http_process_connection(ngx_http_request_t *r, ngx_table_elt_t *h,
 要想完整的讲述这个过程，不可避免需要涉及一些 Nginx 配置解析、解析 HTTP 协议相关的流程，但这些都不是本文的重点，下面均一笔带过。
 
 Nginx 的各历史版本中，对于 http 协议解析的过程，细节稍微有些变化。在 Nginx-1.8.0 中，过程如下：
+
 （0）我们知道，Nginx 是一个主进程加多子进程的架构，配置解析发生在 fork 子进程之前，在这个过程中很多操作都是对于全局变量 cycle 的操作。在 fork 之后，每个子进程均会继承一份这个全局变量 cycle(这里不考虑COW)。
+
 （1）http 配置解析的入口为 ngx_http_block，这是个很复杂的函数。因为 Nginx 的配置文件分层级，可以有包含关系，为了对这个特性提供支持，配置文件的解析涉及到配置项的内存布局的设计，最终落实下来，就是全局变量 cycle 的 conf_ctx 成员，这是个四重指针。配置解析的这部分是另一个话题，本文不打算细说。这里要关注的是，在 ngx_http_block 函数的最后，调用了ngx_http_optimize_servers 方法，在这个方法里，完成了这样一个事情：配置文件里的监听套接字（可能是多个），最终被复制到了全局变量 ngx_cycle 的 listening 数组里。整个调用关系为，nginx.c->main()->ngx_init_cycle->ngx_http_block(在 ngx_init_cycle里通过钩子被回调)->ngx_http_optimize_servers->ngx_http_init_listening->ngx_http_add_listening->ngx_create_listening, 有兴趣的同学可以深入进去看看。
+
 （2）在上面的这个调用链里，ngx_http_add_listening 做了另外一个事情：将所有的ngx_listening_t 类型的监听套接字的 handler 钩子设置为 ngx_http_init_connection，这个在后面会用到。
+
 （3）nginx fork 出多个子进程，每个子进程会在 ngx_worker_process_init 方法里调用各个nginx 模块 init_process 钩子，其中当然也包括 NGX_EVENT_MODULE 类型的ngx_event_core_module 模块，其 init_process 钩子为 ngx_event_process_init。在ngx_event_process_init 里，每一个 ngx_listening_t 类型的监听套接字变量 ls[i]，根据ngx_get_connection 从 nginx 的 connections 储备池里获得一个与之相关的ngx_connection_t 类型的变量 c ,这两个变量均有一个指针成员指向对方，以此保持互相联系。从这里开始，我们将注意力转移到这个 ngx_connection_t 类型的变量 c 上。在 ngx_event_process_init 的后面，这个 ngx_connection_t 类型的变量的读事件的 handler，被置为 ngx_event_accept。然后这个读事件被添加到 epoll 中。
+
 （4）当一个请求来临时，ngx_event_accpet 被回调，其中上面第（2）步里为监听套接字设置的 handler,即 ngx_http_init_connection 被调用：
 
 ```
 ls->handler(c);
 ```
 这个调用非常有趣，ls 实质上是代表着监听套接字，而参数 c 则是 accept 后建立起来的连接套接字，根据 socket 的基本知识，该连接上后续客户端与 Nginx 之间的信息传输，都通过这个连接套接字上的读写来进行。
+
 （5）从 ngx_http_init_connection 开始，就着手进行一系列 HTTP 协议解析。中间涉及到ngx_http_wait_request_handler、ngx_http_create_request、ngx_http_process_request_line、ngx_http_process_request_headers 等解析方法。
 
 似乎已经偏题太远了，我们回到最初的 Connection 请求头，在上面所讲的ngx_http_process_connection 中，根据 Connection 头，将 r->headers_in.connection_type 置为NGX_HTTP_CONNECTION_CLOSE、NGX_HTTP_CONNECTION_KEEP_ALIVE 或者默认初始值 0.
