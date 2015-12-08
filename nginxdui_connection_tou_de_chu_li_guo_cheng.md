@@ -4,9 +4,9 @@
 
 RFC2616 中，对 Connection 的说明如下：
 
-```
+> 
 HTTP/1.1 proxies MUST parse the Connection header field before a message is forwarded and, for each connection-token in this field, remove any header field(s) from the message with the same name as the connection-token. Connection options are signaled by the presence of a connection-token in the Connection header field, not by any corresponding additional header field(s), since the additional header field may not be sent if there are no parameters associated with that connection option.
-```
+
 综合[RFC2626 14.10][1]、《HTTP权威指南》4.3.1、《图解HTTP》6.3.2中的说法，均指明了 Connection 头部（请求头、响应头）主要包括如下两方面的作用：
 1. 控制不再转发给代理的首部字段
 2. 管理持久连接
