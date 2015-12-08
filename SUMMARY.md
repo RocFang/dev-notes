@@ -20,6 +20,7 @@
    * [Nginx的配置解析系统](nginxde_pei_zhi_jie_xi_xi_tong.md)
    * [nginx proxy_cache与etag配合的问题](nginx_proxycache_yu_etag_pei_he_de_wen_ti.md)
    * [不规范的Nginx开发](bu_gui_fan_de_nginx_kai_fa.md)
+   * Nginx对Connection头的处理过程
 * [系统编程](xi_tong_bian_cheng.md)
    * [O_EXCL的作用](oexcl_de_zuo_yong.md)
    * [vfork 挂掉的一个问题](vfork_gua_diao_de_yi_ge_wen_ti.md)
