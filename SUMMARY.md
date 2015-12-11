@@ -21,6 +21,7 @@
    * [nginx proxy_cache与etag配合的问题](nginx_proxycache_yu_etag_pei_he_de_wen_ti.md)
    * [不规范的Nginx开发](bu_gui_fan_de_nginx_kai_fa.md)
    * [Nginx对Connection头的处理过程](nginxdui_connection_tou_de_chu_li_guo_cheng.md)
+   * Nginx-1.9.8推出的切片模块
 * [系统编程](xi_tong_bian_cheng.md)
    * [O_EXCL的作用](oexcl_de_zuo_yong.md)
    * [vfork 挂掉的一个问题](vfork_gua_diao_de_yi_ge_wen_ti.md)
