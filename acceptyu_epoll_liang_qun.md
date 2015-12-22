@@ -1,7 +1,3 @@
-# accept与epoll惊群
-
-今天打开 OneNote,发现里面躺着一篇很久以前写的笔记，现在将它贴出来。
-
 ## 1. 什么叫惊群现象
 
 首先，我们看看[维基百科对惊群的定义][1]:
@@ -37,8 +33,8 @@
 #include <sys/wait.h>
 #include <stdio.h>
 #include <string.h>
-	#define PROCESS_NUM 10
-	int main()
+#define PROCESS_NUM 10
+int main()
 {
     int fd = socket(PF_INET, SOCK_STREAM, 0);
     int connfd;
@@ -107,8 +103,8 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/wait.h>
-	#define PROCESS_NUM 10
-	static int
+#define PROCESS_NUM 10
+static int
 create_and_bind (char *port)
 {
     int fd = socket(PF_INET, SOCK_STREAM, 0);
@@ -301,4 +297,3 @@ accept 确实应该只能被一个进程调用成功，内核很清楚这一点�
   [5]: http://blog.163.com/pandalove@126/blog/static/9800324520122633515612
   [6]: http://nginx.org/en/docs/ngx_core_module.html#accept_mutex
   [7]: http://blog.csdn.net/russell_tao/article/details/7204260
-
