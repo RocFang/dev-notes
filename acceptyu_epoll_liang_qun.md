@@ -40,13 +40,13 @@ int main()
     int connfd;
     int pid;
     char sendbuff[1024];
-	struct sockaddr_in serveraddr;
+    struct sockaddr_in serveraddr;
     serveraddr.sin_family = AF_INET;
     serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
     serveraddr.sin_port = htons(1234);
-	bind(fd, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
+    bind(fd, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
     listen(fd, 1024);
-	        int i;
+    int i;
     for(i = 0; i < PROCESS_NUM; i++)
     {
         int pid = fork();
@@ -63,7 +63,7 @@ int main()
             }
         }
     }
-	        int status;
+    int status;
     wait(&status);
     return 0;
 }
@@ -137,7 +137,8 @@ make_socket_non_blocking (int sfd)
  
     return 0;
 }
-	#define MAXEVENTS 64
+
+#define MAXEVENTS 64
  
 int
 main (int argc, char *argv[])
